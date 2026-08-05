@@ -536,7 +536,13 @@ export type MachineNetwork = {
 };
 
 export type MachineNetworkIngress = {
+    /**
+     * Ports that require the ingress key. Wins over public when a port matches both.
+     */
     authenticated?: MachineAuthenticatedIngress;
+    /**
+     * Ports open to everyone.
+     */
     public?: MachinePublicIngress;
 };
 
@@ -577,6 +583,10 @@ export type MachineResponse = {
      * The runtime Machine tier.
      */
     machine_tier: string;
+    /**
+     * The ingress policy, including the authenticated ingress key. Omitted when the Machine was created without one.
+     */
+    network?: MachineNetwork;
     /**
      * The region where the Machine runs.
      */
@@ -1100,6 +1110,10 @@ export type MachineResponseWritable = {
      * The runtime Machine tier.
      */
     machine_tier: string;
+    /**
+     * The ingress policy, including the authenticated ingress key. Omitted when the Machine was created without one.
+     */
+    network?: MachineNetwork;
     /**
      * The region where the Machine runs.
      */
@@ -1679,6 +1693,66 @@ export type GetMachineResponses = {
 };
 
 export type GetMachineResponse = GetMachineResponses[keyof GetMachineResponses];
+
+export type PauseMachineData = {
+    body?: never;
+    path: {
+        /**
+         * The stable Machine ID (UUID).
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/machines/{id}/pause';
+};
+
+export type PauseMachineErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type PauseMachineError = PauseMachineErrors[keyof PauseMachineErrors];
+
+export type PauseMachineResponses = {
+    /**
+     * Accepted
+     */
+    202: MachineResponse;
+};
+
+export type PauseMachineResponse = PauseMachineResponses[keyof PauseMachineResponses];
+
+export type ResumeMachineData = {
+    body?: never;
+    path: {
+        /**
+         * The stable Machine ID (UUID).
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/machines/{id}/resume';
+};
+
+export type ResumeMachineErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type ResumeMachineError = ResumeMachineErrors[keyof ResumeMachineErrors];
+
+export type ResumeMachineResponses = {
+    /**
+     * Accepted
+     */
+    202: MachineResponse;
+};
+
+export type ResumeMachineResponse = ResumeMachineResponses[keyof ResumeMachineResponses];
 
 export type GetMeData = {
     body?: never;

@@ -705,10 +705,15 @@ components:
       properties:
         key:
           description: Plaintext key required in the X-Atlasflow-Key request header.
+          examples:
+            - atlasflow
           minLength: 1
           type: string
         ports:
           description: Ports or inclusive port ranges that require X-Atlasflow-Key.
+          examples:
+            - - "80"
+              - "443"
           items:
             type: string
           minItems: 1
@@ -741,14 +746,18 @@ components:
       properties:
         authenticated:
           $ref: "#/components/schemas/MachineAuthenticatedIngress"
+          description: Ports that require the ingress key. Wins over public when a port matches both.
         public:
           $ref: "#/components/schemas/MachinePublicIngress"
+          description: Ports open to everyone.
       type: object
     MachinePublicIngress:
       additionalProperties: false
       properties:
         ports:
           description: Ports or inclusive port ranges to expose, such as 8080 or 8000-9000.
+          examples:
+            - - 0-65535
           items:
             type: string
           minItems: 1
@@ -791,6 +800,9 @@ components:
         machine_tier:
           description: The runtime Machine tier.
           type: string
+        network:
+          $ref: "#/components/schemas/MachineNetwork"
+          description: The ingress policy, including the authenticated ingress key. Omitted when the Machine was created without one.
         region:
           description: The region where the Machine runs.
           type: string
@@ -1519,6 +1531,66 @@ paths:
       security:
         - apiKey: []
       summary: Get a Machine
+      tags:
+        - Machines
+  /machines/{id}/pause:
+    post:
+      description: Requests an asynchronous pause of an active Machine. A paused Machine stops serving requests but keeps its ID, hostname, disk, and in-memory state.
+      operationId: pause-machine
+      parameters:
+        - description: The stable Machine ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The stable Machine ID (UUID).
+            type: string
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MachineResponse"
+          description: Accepted
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Pause a Machine
+      tags:
+        - Machines
+  /machines/{id}/resume:
+    post:
+      description: Requests an asynchronous resume of a paused Machine. The Machine continues from its preserved in-memory state when available and restarts otherwise.
+      operationId: resume-machine
+      parameters:
+        - description: The stable Machine ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The stable Machine ID (UUID).
+            type: string
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MachineResponse"
+          description: Accepted
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Resume a Machine
       tags:
         - Machines
   /me:

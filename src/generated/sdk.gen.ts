@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivatePostgresData, ActivatePostgresErrors, ActivatePostgresResponses, CreateDeploymentData, CreateDeploymentErrors, CreateDeploymentResponses, CreateEnvironmentData, CreateEnvironmentErrors, CreateEnvironmentResponses, CreateImageData, CreateImageErrors, CreateImageResponses, CreateMachineData, CreateMachineErrors, CreateMachineResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteEnvironmentData, DeleteEnvironmentErrors, DeleteEnvironmentResponses, DeleteMachineData, DeleteMachineErrors, DeleteMachineResponses, GetDeploymentData, GetDeploymentErrors, GetDeploymentResponses, GetEnvironmentData, GetEnvironmentErrors, GetEnvironmentPostgresData, GetEnvironmentPostgresErrors, GetEnvironmentPostgresResponses, GetEnvironmentResponses, GetGithubInstallUrlData, GetGithubInstallUrlErrors, GetGithubInstallUrlResponses, GetImageData, GetImageErrors, GetImageResponses, GetMachineData, GetMachineErrors, GetMachineResponses, GetMeData, GetMeErrors, GetMeResponses, GetProjectData, GetProjectErrors, GetProjectGithubStatusData, GetProjectGithubStatusErrors, GetProjectGithubStatusResponses, GetProjectResponses, ListDeploymentDomainsData, ListDeploymentDomainsErrors, ListDeploymentDomainsResponses, ListDeploymentLogsData, ListDeploymentLogsErrors, ListDeploymentLogsResponses, ListDeploymentsData, ListDeploymentsErrors, ListDeploymentsResponses, ListEnvironmentsData, ListEnvironmentsErrors, ListEnvironmentsResponses, ListFeatureFlagsData, ListFeatureFlagsErrors, ListFeatureFlagsResponses, ListGithubAccountsData, ListGithubAccountsErrors, ListGithubAccountsResponses, ListGithubRepositoriesData, ListGithubRepositoriesErrors, ListGithubRepositoriesResponses, ListImagesData, ListImagesErrors, ListImagesResponses, ListMachinesData, ListMachinesErrors, ListMachinesResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, ReconnectProjectGithubData, ReconnectProjectGithubErrors, ReconnectProjectGithubResponses, UpdateEnvironmentData, UpdateEnvironmentErrors, UpdateEnvironmentResponses } from './types.gen';
+import type { ActivatePostgresData, ActivatePostgresErrors, ActivatePostgresResponses, CreateDeploymentData, CreateDeploymentErrors, CreateDeploymentResponses, CreateEnvironmentData, CreateEnvironmentErrors, CreateEnvironmentResponses, CreateImageData, CreateImageErrors, CreateImageResponses, CreateMachineData, CreateMachineErrors, CreateMachineResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteEnvironmentData, DeleteEnvironmentErrors, DeleteEnvironmentResponses, DeleteMachineData, DeleteMachineErrors, DeleteMachineResponses, GetDeploymentData, GetDeploymentErrors, GetDeploymentResponses, GetEnvironmentData, GetEnvironmentErrors, GetEnvironmentPostgresData, GetEnvironmentPostgresErrors, GetEnvironmentPostgresResponses, GetEnvironmentResponses, GetGithubInstallUrlData, GetGithubInstallUrlErrors, GetGithubInstallUrlResponses, GetImageData, GetImageErrors, GetImageResponses, GetMachineData, GetMachineErrors, GetMachineResponses, GetMeData, GetMeErrors, GetMeResponses, GetProjectData, GetProjectErrors, GetProjectGithubStatusData, GetProjectGithubStatusErrors, GetProjectGithubStatusResponses, GetProjectResponses, ListDeploymentDomainsData, ListDeploymentDomainsErrors, ListDeploymentDomainsResponses, ListDeploymentLogsData, ListDeploymentLogsErrors, ListDeploymentLogsResponses, ListDeploymentsData, ListDeploymentsErrors, ListDeploymentsResponses, ListEnvironmentsData, ListEnvironmentsErrors, ListEnvironmentsResponses, ListFeatureFlagsData, ListFeatureFlagsErrors, ListFeatureFlagsResponses, ListGithubAccountsData, ListGithubAccountsErrors, ListGithubAccountsResponses, ListGithubRepositoriesData, ListGithubRepositoriesErrors, ListGithubRepositoriesResponses, ListImagesData, ListImagesErrors, ListImagesResponses, ListMachinesData, ListMachinesErrors, ListMachinesResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, PauseMachineData, PauseMachineErrors, PauseMachineResponses, ReconnectProjectGithubData, ReconnectProjectGithubErrors, ReconnectProjectGithubResponses, ResumeMachineData, ResumeMachineErrors, ResumeMachineResponses, UpdateEnvironmentData, UpdateEnvironmentErrors, UpdateEnvironmentResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -273,6 +273,32 @@ export class Atlasflow extends HeyApiClient {
         return (options.client ?? this.client).get<GetMachineResponses, GetMachineErrors, ThrowOnError>({
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/machines/{id}',
+            ...options
+        });
+    }
+    
+    /**
+     * Pause a Machine
+     *
+     * Requests an asynchronous pause of an active Machine. A paused Machine stops serving requests but keeps its ID, hostname, disk, and in-memory state.
+     */
+    public pauseMachine<ThrowOnError extends boolean = false>(options: Options<PauseMachineData, ThrowOnError>): RequestResult<PauseMachineResponses, PauseMachineErrors, ThrowOnError> {
+        return (options.client ?? this.client).post<PauseMachineResponses, PauseMachineErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/machines/{id}/pause',
+            ...options
+        });
+    }
+    
+    /**
+     * Resume a Machine
+     *
+     * Requests an asynchronous resume of a paused Machine. The Machine continues from its preserved in-memory state when available and restarts otherwise.
+     */
+    public resumeMachine<ThrowOnError extends boolean = false>(options: Options<ResumeMachineData, ThrowOnError>): RequestResult<ResumeMachineResponses, ResumeMachineErrors, ThrowOnError> {
+        return (options.client ?? this.client).post<ResumeMachineResponses, ResumeMachineErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/machines/{id}/resume',
             ...options
         });
     }

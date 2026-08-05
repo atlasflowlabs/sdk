@@ -74,3 +74,7 @@ snapshot.
 
 Pushing a `v*` tag builds, tests, and publishes the package to npm with
 provenance via trusted publishing.
+
+## License
+
+[Apache License 2.0](LICENSE)

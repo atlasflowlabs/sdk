@@ -1,0 +1,1941 @@
+components:
+  schemas:
+    CreateDeploymentInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/CreateDeploymentInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        environment_slug:
+          description: The environment slug to deploy. Defaults to production.
+          type: string
+        project_slug:
+          description: The project slug to deploy.
+          type: string
+      required:
+        - project_slug
+      type: object
+    CreateEnvironmentInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/CreateEnvironmentInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        branch:
+          description: The branch to track. Defaults to main.
+          type: string
+        build_machine_tier:
+          description: The build machine tier. Defaults to standard.
+          type: string
+        dockerfile_path:
+          description: The Dockerfile path. Defaults to Dockerfile.
+          type: string
+        min_replicas:
+          description: The minimum number of VM replicas. Defaults to 1.
+          format: int64
+          type: integer
+        root_directory:
+          description: The build root directory. Defaults to /.
+          type: string
+        runtime_machine_tier:
+          description: The runtime machine tier. Defaults to small.
+          type: string
+        slug:
+          description: The environment slug.
+          type: string
+        type:
+          description: "The environment type: preview."
+          type: string
+      required:
+        - slug
+        - type
+      type: object
+    CreateImageInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/CreateImageInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        image_pull_secret:
+          description: Source registry credentials in username:password format.
+          type: string
+        registry:
+          description: OCI registry hostname. Defaults to docker.io.
+          type: string
+        repository:
+          description: Repository path, for example alpine/curl.
+          type: string
+        tag:
+          description: Image tag. Defaults to latest.
+          type: string
+      required:
+        - repository
+      type: object
+    CreateMachineInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/CreateMachineInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        command:
+          description: Optional argv that replaces the OCI image's default process arguments. Commands are executed directly without a shell.
+          items:
+            type: string
+          type:
+            - array
+            - "null"
+        image_id:
+          description: A workspace-owned OCI image ID.
+          type: string
+        machine_tier:
+          description: "Runtime tier: small, medium, or large. Defaults to small."
+          examples:
+            - small
+          type: string
+        network:
+          $ref: "#/components/schemas/MachineNetwork"
+          description: Optional ingress policy. Machines deny all ingress when omitted.
+        region:
+          description: Region where the Machine runs. Defaults to de-fra-1.
+          examples:
+            - de-fra-1
+          type: string
+      required:
+        - image_id
+      type: object
+    CreateProjectInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/CreateProjectInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        dockerfile_path:
+          description: Path to the Dockerfile, relative to the root directory. Defaults to Dockerfile.
+          type: string
+        github_repository:
+          description: The linked GitHub repository in owner/repo format.
+          type: string
+        name:
+          description: The project name.
+          type: string
+        root_directory:
+          description: Repository path the project builds from. Defaults to /.
+          type: string
+      required:
+        - name
+        - github_repository
+      type: object
+    CursorListResponseImageResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/CursorListResponseImageResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          items:
+            $ref: "#/components/schemas/ImageResponse"
+          type:
+            - array
+            - "null"
+        meta:
+          $ref: "#/components/schemas/CursorMeta"
+      required:
+        - data
+        - meta
+      type: object
+    CursorListResponseMachineResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/CursorListResponseMachineResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          items:
+            $ref: "#/components/schemas/MachineResponse"
+          type:
+            - array
+            - "null"
+        meta:
+          $ref: "#/components/schemas/CursorMeta"
+      required:
+        - data
+        - meta
+      type: object
+    CursorMeta:
+      additionalProperties: false
+      properties:
+        cursor_end:
+          description: Cursor of the last resource in this page. Pass it as after to request the next page.
+          type: string
+        cursor_start:
+          description: Cursor of the first resource in this page. Empty when the page has no resources.
+          type: string
+        has_next:
+          description: Whether another page is available after cursor_end.
+          type: boolean
+      required:
+        - cursor_start
+        - cursor_end
+        - has_next
+      type: object
+    DeleteEnvironmentOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/DeleteEnvironmentOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        deleted:
+          type: boolean
+      required:
+        - deleted
+      type: object
+    DeploymentDomainResponse:
+      additionalProperties: false
+      properties:
+        id:
+          description: The domain ID.
+          type: string
+        name:
+          description: The hostname. The URL is https://<name>.
+          type: string
+        verified_at:
+          description: When the domain was verified, if applicable.
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+      type: object
+    DeploymentEnvironmentRef:
+      additionalProperties: false
+      properties:
+        id:
+          description: The environment ID.
+          type: string
+        slug:
+          description: The environment slug.
+          type: string
+      required:
+        - id
+        - slug
+      type: object
+    DeploymentLogLineResponse:
+      additionalProperties: false
+      properties:
+        created_at:
+          description: When the log line was recorded.
+          format: date-time
+          type: string
+        id:
+          description: The build log row ID.
+          type: string
+        level:
+          description: The log level (INFO, WARN, ERROR).
+          type: string
+        step_name:
+          description: The build step name this line belongs to, if any.
+          type: string
+        text:
+          description: The log line text.
+          type: string
+      required:
+        - id
+        - text
+        - level
+        - created_at
+      type: object
+    DeploymentProjectRef:
+      additionalProperties: false
+      properties:
+        id:
+          description: The project ID.
+          type: string
+        slug:
+          description: The project slug.
+          type: string
+      required:
+        - id
+        - slug
+      type: object
+    DeploymentResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/DeploymentResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        created_at:
+          description: When the deployment was created.
+          format: date-time
+          type: string
+        desired_state:
+          description: The desired state (run or stop).
+          type: string
+        environment:
+          $ref: "#/components/schemas/DeploymentEnvironmentRef"
+          description: The environment this deployment belongs to.
+        github_branch:
+          description: The branch the deployment builds from.
+          type: string
+        github_commit:
+          description: The commit SHA the deployment builds from.
+          type: string
+        github_commit_author:
+          description: The commit author's GitHub login.
+          type: string
+        github_commit_message:
+          description: The first line of the commit message.
+          type: string
+        id:
+          description: The deployment ID.
+          type: string
+        project:
+          $ref: "#/components/schemas/DeploymentProjectRef"
+          description: The project this deployment belongs to.
+        status:
+          description: Derived deployment status (INITIALIZING, BUILDING, DEPLOYING, HEALTHCHECK, RUNNING, STOPPED, FAILED, PENDING).
+          type: string
+        status_changed_at:
+          description: When the deployment status last changed.
+          format: date-time
+          type: string
+      required:
+        - id
+        - project
+        - environment
+        - status
+        - desired_state
+        - github_commit
+        - github_branch
+        - github_commit_message
+        - github_commit_author
+        - created_at
+        - status_changed_at
+      type: object
+    EnvironmentResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/EnvironmentResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        branch:
+          description: The branch this environment tracks.
+          type: string
+        build_machine_tier:
+          description: "The build machine tier: standard, enhanced, or performance."
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        dockerfile_path:
+          description: The Dockerfile path relative to the root directory.
+          type: string
+        id:
+          description: The environment ID (UUID).
+          type: string
+        min_replicas:
+          description: The minimum number of VM replicas.
+          format: int64
+          type: integer
+        root_directory:
+          description: The build root directory.
+          type: string
+        runtime_machine_tier:
+          description: "The runtime machine tier: small, medium, or large."
+          type: string
+        slug:
+          description: The environment slug, unique within the project.
+          type: string
+        type:
+          description: "The environment type: production or preview."
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+        - id
+        - slug
+        - type
+        - branch
+        - root_directory
+        - dockerfile_path
+        - build_machine_tier
+        - runtime_machine_tier
+        - min_replicas
+        - created_at
+        - updated_at
+      type: object
+    ErrorDetail:
+      additionalProperties: false
+      properties:
+        location:
+          description: Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id'
+          type: string
+        message:
+          description: Error message text
+          type: string
+        value:
+          description: The value at the given location
+      type: object
+    ErrorModel:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ErrorModel.json
+          format: uri
+          readOnly: true
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          examples:
+            - Property foo is required but is missing.
+          type: string
+        errors:
+          description: Optional list of individual error details
+          items:
+            $ref: "#/components/schemas/ErrorDetail"
+          type:
+            - array
+            - "null"
+        instance:
+          description: A URI reference that identifies the specific occurrence of the problem.
+          examples:
+            - https://example.com/error-log/abc123
+          format: uri
+          type: string
+        status:
+          description: HTTP status code
+          examples:
+            - 400
+          format: int64
+          type: integer
+        title:
+          description: A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
+          examples:
+            - Bad Request
+          type: string
+        type:
+          default: about:blank
+          description: A URI reference to human-readable documentation for the error.
+          examples:
+            - https://example.com/errors/example
+          format: uri
+          type: string
+      type: object
+    FeatureFlagsResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/FeatureFlagsResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        flags:
+          description: Names of feature flags enabled for the workspace.
+          items:
+            type: string
+          type:
+            - array
+            - "null"
+      required:
+        - flags
+      type: object
+    GithubAccountResponse:
+      additionalProperties: false
+      properties:
+        account:
+          description: The GitHub account (login) that installed the app.
+          type: string
+      required:
+        - account
+      type: object
+    GithubInstallURLOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/GithubInstallURLOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        url:
+          description: The GitHub App install URL to open in a browser.
+          type: string
+      required:
+        - url
+      type: object
+    GithubRepositoryResponse:
+      additionalProperties: false
+      properties:
+        full_name:
+          description: The full owner/repo name.
+          type: string
+        name:
+          description: The repository name.
+          type: string
+        owner:
+          description: The repository owner login.
+          type: string
+      required:
+        - full_name
+        - owner
+        - name
+      type: object
+    ImageResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ImageResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        created_at:
+          description: When the image was created.
+          format: date-time
+          type: string
+        id:
+          description: The image ID.
+          type: string
+        reference:
+          description: The canonical image reference.
+          type: string
+        registry:
+          description: The OCI registry hostname.
+          type: string
+        repository:
+          description: The repository path in the registry.
+          type: string
+        tag:
+          description: The image tag.
+          type: string
+        updated_at:
+          description: When the image was last updated.
+          format: date-time
+          type: string
+      required:
+        - id
+        - registry
+        - repository
+        - tag
+        - reference
+        - created_at
+        - updated_at
+      type: object
+    ListResponseDeploymentDomainResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ListResponseDeploymentDomainResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          items:
+            $ref: "#/components/schemas/DeploymentDomainResponse"
+          type:
+            - array
+            - "null"
+      required:
+        - data
+      type: object
+    ListResponseDeploymentLogLineResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ListResponseDeploymentLogLineResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          items:
+            $ref: "#/components/schemas/DeploymentLogLineResponse"
+          type:
+            - array
+            - "null"
+      required:
+        - data
+      type: object
+    ListResponseDeploymentResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ListResponseDeploymentResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          items:
+            $ref: "#/components/schemas/DeploymentResponse"
+          type:
+            - array
+            - "null"
+      required:
+        - data
+      type: object
+    ListResponseEnvironmentResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ListResponseEnvironmentResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          items:
+            $ref: "#/components/schemas/EnvironmentResponse"
+          type:
+            - array
+            - "null"
+      required:
+        - data
+      type: object
+    ListResponseGithubAccountResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ListResponseGithubAccountResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          items:
+            $ref: "#/components/schemas/GithubAccountResponse"
+          type:
+            - array
+            - "null"
+      required:
+        - data
+      type: object
+    ListResponseGithubRepositoryResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ListResponseGithubRepositoryResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          items:
+            $ref: "#/components/schemas/GithubRepositoryResponse"
+          type:
+            - array
+            - "null"
+      required:
+        - data
+      type: object
+    ListResponseProjectResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ListResponseProjectResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          items:
+            $ref: "#/components/schemas/ProjectResponse"
+          type:
+            - array
+            - "null"
+      required:
+        - data
+      type: object
+    MachineAuthenticatedIngress:
+      additionalProperties: false
+      properties:
+        key:
+          description: Plaintext key required in the X-Atlasflow-Key request header.
+          minLength: 1
+          type: string
+        ports:
+          description: Ports or inclusive port ranges that require X-Atlasflow-Key.
+          items:
+            type: string
+          minItems: 1
+          type: array
+      required:
+        - ports
+        - key
+      type: object
+    MachineImageResponse:
+      additionalProperties: false
+      properties:
+        id:
+          description: The image ID.
+          type: string
+        reference:
+          description: The canonical OCI image reference.
+          type: string
+      required:
+        - id
+        - reference
+      type: object
+    MachineNetwork:
+      additionalProperties: false
+      properties:
+        ingress:
+          $ref: "#/components/schemas/MachineNetworkIngress"
+      type: object
+    MachineNetworkIngress:
+      additionalProperties: false
+      properties:
+        authenticated:
+          $ref: "#/components/schemas/MachineAuthenticatedIngress"
+        public:
+          $ref: "#/components/schemas/MachinePublicIngress"
+      type: object
+    MachinePublicIngress:
+      additionalProperties: false
+      properties:
+        ports:
+          description: Ports or inclusive port ranges to expose, such as 8080 or 8000-9000.
+          items:
+            type: string
+          minItems: 1
+          type: array
+      required:
+        - ports
+      type: object
+    MachineResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/MachineResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        command:
+          description: Optional argv that replaces the OCI image's default process arguments.
+          items:
+            type: string
+          type:
+            - array
+            - "null"
+        created_at:
+          description: When the Machine was created.
+          format: date-time
+          type: string
+        desired_state:
+          description: The logical desired state.
+          type: string
+        hostname:
+          description: The Machine hostname component. Access a port at https://machine-{hostname}-{port}.atlasflow.dev.
+          type: string
+        id:
+          description: The stable Machine ID.
+          type: string
+        image:
+          $ref: "#/components/schemas/MachineImageResponse"
+        machine_tier:
+          description: The runtime Machine tier.
+          type: string
+        region:
+          description: The region where the Machine runs.
+          type: string
+        updated_at:
+          description: When the Machine was last updated.
+          format: date-time
+          type: string
+      required:
+        - id
+        - image
+        - machine_tier
+        - region
+        - desired_state
+        - hostname
+        - created_at
+        - updated_at
+      type: object
+    MeResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/MeResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        user:
+          $ref: "#/components/schemas/UserResponse"
+        workspace:
+          $ref: "#/components/schemas/WorkspaceResponse"
+      required:
+        - user
+        - workspace
+      type: object
+    PostgresDatabaseResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/PostgresDatabaseResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        created_at:
+          description: When the database was activated.
+          format: date-time
+          type: string
+        id:
+          description: The managed Postgres database ID.
+          type: string
+        members:
+          description: The cluster members and their roles.
+          items:
+            $ref: "#/components/schemas/PostgresMemberResponse"
+          type:
+            - array
+            - "null"
+        proxy_hostname:
+          description: The customer-facing Postgres proxy hostname.
+          type: string
+        status:
+          description: "Derived cluster health: provisioning, healthy, or degraded."
+          type: string
+      required:
+        - id
+        - status
+        - members
+        - created_at
+      type: object
+    PostgresMemberResponse:
+      additionalProperties: false
+      properties:
+        id:
+          description: The member's VM ID.
+          type: string
+        name:
+          description: The member name (VM ID).
+          type: string
+        role:
+          description: "The member role: leader or replica."
+          type: string
+        status:
+          description: "The member status: healthy, stopped, or provisioning."
+          type: string
+      required:
+        - id
+        - name
+        - role
+        - status
+      type: object
+    ProjectGitHubStatusResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ProjectGitHubStatusResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        connected:
+          description: Whether the project's GitHub repository is accessible via an installed app.
+          type: boolean
+        error:
+          description: A human-readable reason when the repository is not connected.
+          type: string
+        repository:
+          description: The linked repository in owner/repo form.
+          type: string
+      required:
+        - connected
+        - repository
+      type: object
+    ProjectResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ProjectResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        created_at:
+          description: When the project was created.
+          format: date-time
+          type: string
+        github_repository:
+          description: Owner/repo of the linked GitHub repository.
+          type: string
+        id:
+          description: The project ID.
+          type: string
+        name:
+          description: The project name.
+          type: string
+        slug:
+          description: URL-safe project slug.
+          type: string
+        updated_at:
+          description: When the project was last updated.
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - slug
+        - github_repository
+        - created_at
+        - updated_at
+      type: object
+    UpdateEnvironmentInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/UpdateEnvironmentInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        branch:
+          description: The branch to track.
+          type: string
+        build_machine_tier:
+          description: The build machine tier.
+          type: string
+        dockerfile_path:
+          description: The Dockerfile path.
+          type: string
+        min_replicas:
+          description: The minimum number of VM replicas.
+          format: int64
+          type: integer
+        root_directory:
+          description: The build root directory.
+          type: string
+        runtime_machine_tier:
+          description: The runtime machine tier.
+          type: string
+      type: object
+    UserResponse:
+      additionalProperties: false
+      properties:
+        account_id:
+          description: The owning account ID.
+          type: string
+        created_at:
+          description: When the user was created.
+          format: date-time
+          type: string
+        email:
+          description: The account's email address.
+          type: string
+        id:
+          description: The user's ID.
+          type: string
+        name:
+          description: The account's display name.
+          type: string
+      required:
+        - id
+        - account_id
+        - name
+        - email
+        - created_at
+      type: object
+    WorkspaceResponse:
+      additionalProperties: false
+      properties:
+        created_at:
+          description: When the workspace was created.
+          format: date-time
+          type: string
+        id:
+          description: The workspace ID.
+          type: string
+        name:
+          description: The workspace name.
+          type: string
+        slug:
+          description: URL-safe workspace slug.
+          type: string
+      required:
+        - id
+        - name
+        - slug
+        - created_at
+      type: object
+  securitySchemes:
+    apiKey:
+      bearerFormat: Atlasflow API key
+      description: Atlasflow API key (af_live_...) presented as a bearer token in the Authorization header.
+      scheme: bearer
+      type: http
+info:
+  title: Atlasflow REST API
+  version: 1.0.0
+openapi: 3.1.0
+paths:
+  /deployments:
+    get:
+      description: Returns production deployments in the caller's current workspace by default. Filter by project_slug and optional environment_slug to select a project environment.
+      operationId: list-deployments
+      parameters:
+        - description: Filter deployments to a project slug. When environment_slug is omitted, the production environment is used.
+          explode: false
+          in: query
+          name: project_slug
+          schema:
+            description: Filter deployments to a project slug. When environment_slug is omitted, the production environment is used.
+            type: string
+        - description: Filter deployments to an environment slug within project_slug.
+          explode: false
+          in: query
+          name: environment_slug
+          schema:
+            description: Filter deployments to an environment slug within project_slug.
+            type: string
+        - description: Maximum number of deployments to return. Defaults to all.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            description: Maximum number of deployments to return. Defaults to all.
+            format: int64
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponseDeploymentResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List deployments
+      tags:
+        - Deployments
+    post:
+      description: Triggers a deployment for a project environment. The environment defaults to production.
+      operationId: create-deployment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDeploymentInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeploymentResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Create a deployment
+      tags:
+        - Deployments
+  /deployments/{id}:
+    get:
+      description: Returns a single deployment by ID from the caller's current workspace, with its derived status.
+      operationId: get-deployment
+      parameters:
+        - description: The deployment ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The deployment ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeploymentResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Get a deployment
+      tags:
+        - Deployments
+  /deployments/{id}/domains:
+    get:
+      description: Returns all domain rows linked to the deployment, including auto-provisioned internal (.atlasflow.dev) and custom domains. The URL for each domain is https://<name>.
+      operationId: list-deployment-domains
+      parameters:
+        - description: The deployment ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The deployment ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponseDeploymentDomainResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List domains for a deployment
+      tags:
+        - Deployments
+  /deployments/{id}/logs:
+    get:
+      description: Returns recent log lines for the deployment. Use type=build for build logs or type=runtime (default) for runtime (VM) logs. Use the tail query parameter to limit the number of lines (default 200, max 1000). This is a snapshot, not a live stream.
+      operationId: list-deployment-logs
+      parameters:
+        - description: The deployment ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The deployment ID (UUID).
+            type: string
+        - description: "Log type: runtime (default) or build."
+          explode: false
+          in: query
+          name: type
+          schema:
+            description: "Log type: runtime (default) or build."
+            type: string
+        - description: Maximum number of recent log lines to return. Defaults to 200.
+          explode: false
+          in: query
+          name: tail
+          schema:
+            description: Maximum number of recent log lines to return. Defaults to 200.
+            format: int64
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponseDeploymentLogLineResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List recent deployment logs
+      tags:
+        - Deployments
+  /feature_flags:
+    get:
+      description: Returns the names of feature flags enabled for the caller's current workspace.
+      operationId: list-feature-flags
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeatureFlagsResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List enabled feature flags
+      tags:
+        - Feature Flags
+  /github/accounts:
+    get:
+      description: Returns the distinct GitHub accounts (logins) that have installed the app for the caller's workspace.
+      operationId: list-github-accounts
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponseGithubAccountResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List GitHub accounts
+      tags:
+        - GitHub
+  /github/install_url:
+    get:
+      description: Returns a signed URL to install the Atlasflow GitHub App for the caller's workspace. Open it in a browser to complete installation.
+      operationId: get-github-install-url
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GithubInstallURLOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Get the GitHub App install URL
+      tags:
+        - GitHub
+  /github/repositories:
+    get:
+      description: Returns repositories visible to the app installations for the caller's workspace, optionally filtered by account (login).
+      operationId: list-github-repositories
+      parameters:
+        - description: Filter repositories to this GitHub account (login).
+          explode: false
+          in: query
+          name: account
+          schema:
+            description: Filter repositories to this GitHub account (login).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponseGithubRepositoryResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List GitHub repositories
+      tags:
+        - GitHub
+  /images:
+    get:
+      description: Returns a cursor-paginated list of images in the caller's current workspace.
+      operationId: list-images
+      parameters:
+        - description: Maximum number of images to return. Defaults to 50 and cannot exceed 100.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            description: Maximum number of images to return. Defaults to 50 and cannot exceed 100.
+            format: int64
+            type: integer
+        - description: Return resources after this cursor. Use meta.cursor_end from the previous page.
+          explode: false
+          in: query
+          name: after
+          schema:
+            description: Return resources after this cursor. Use meta.cursor_end from the previous page.
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CursorListResponseImageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List images
+      tags:
+        - Images
+    post:
+      description: Copies an OCI image into the Atlasflow registry and adds it to the caller's current workspace. Registry defaults to docker.io and tag defaults to latest.
+      operationId: create-image
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateImageInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Create an image
+      tags:
+        - Images
+  /images/{id}:
+    get:
+      description: Returns an image by ID from the caller's current workspace.
+      operationId: get-image
+      parameters:
+        - description: The image ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The image ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Get an image
+      tags:
+        - Images
+  /machines:
+    get:
+      description: Returns active Machines in the caller's current workspace in descending ID order. Machine root filesystems are ephemeral, so filesystem changes are lost whenever execution stops or restarts.
+      operationId: list-machines
+      parameters:
+        - description: Maximum number of Machines to return. Defaults to 50 and cannot exceed 100.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            description: Maximum number of Machines to return. Defaults to 50 and cannot exceed 100.
+            format: int64
+            type: integer
+        - description: Return resources after this cursor. Use meta.cursor_end from the previous page.
+          explode: false
+          in: query
+          name: after
+          schema:
+            description: Return resources after this cursor. Use meta.cursor_end from the previous page.
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CursorListResponseMachineResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List Machines
+      tags:
+        - Machines
+    post:
+      description: Creates a Machine from a workspace-owned OCI image. Execution placement is asynchronous. The root filesystem is ephemeral, and all filesystem changes are lost whenever execution stops or restarts.
+      operationId: create-machine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMachineInputBody"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MachineResponse"
+          description: Created
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Create a Machine
+      tags:
+        - Machines
+  /machines/{id}:
+    delete:
+      description: Accepts asynchronous deletion of an active Machine in the caller's current workspace. The Machine disappears from GET and list responses immediately, while its execution VM is stopped and deleted asynchronously. Repeated deletion returns 404.
+      operationId: delete-machine
+      parameters:
+        - description: The stable Machine ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The stable Machine ID (UUID).
+            type: string
+      responses:
+        "202":
+          description: Accepted
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Delete a Machine
+      tags:
+        - Machines
+    get:
+      description: Returns an active Machine by its stable ID from the caller's current workspace. The internal execution VM and IP are not exposed. Root filesystem changes are lost whenever execution stops or restarts.
+      operationId: get-machine
+      parameters:
+        - description: The stable Machine ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The stable Machine ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MachineResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Get a Machine
+      tags:
+        - Machines
+  /me:
+    get:
+      description: Returns the caller's identity and the workspace the API key belongs to.
+      operationId: get-me
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Get the authenticated user
+      tags:
+        - Me
+  /projects:
+    get:
+      description: Returns all projects in the caller's current workspace.
+      operationId: list-projects
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponseProjectResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List projects
+      tags:
+        - Projects
+    post:
+      description: Creates a project linked to a GitHub repository in the caller's current workspace. The GitHub App must be installed for the repository's owner.
+      operationId: create-project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProjectInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Create a project
+      tags:
+        - Projects
+  /projects/{id}:
+    get:
+      description: Returns a single project by ID from the caller's current workspace.
+      operationId: get-project
+      parameters:
+        - description: The project ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The project ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Get a project
+      tags:
+        - Projects
+  /projects/{id}/environments:
+    get:
+      description: Returns all environments for the given project.
+      operationId: list-environments
+      parameters:
+        - description: The project ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The project ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponseEnvironmentResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List environments for a project
+      tags:
+        - Environments
+    post:
+      description: Creates a new preview environment for the given project. Production environments are created automatically with the project.
+      operationId: create-environment
+      parameters:
+        - description: The project ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The project ID (UUID).
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEnvironmentInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvironmentResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Create an environment
+      tags:
+        - Environments
+  /projects/{id}/environments/{envId}:
+    delete:
+      description: Soft-deletes an environment. Production environments cannot be deleted; delete the project instead.
+      operationId: delete-environment
+      parameters:
+        - description: The project ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The project ID (UUID).
+            type: string
+        - description: The environment ID (UUID).
+          in: path
+          name: envId
+          required: true
+          schema:
+            description: The environment ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteEnvironmentOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Delete an environment
+      tags:
+        - Environments
+    get:
+      description: Returns a single environment by ID within the given project.
+      operationId: get-environment
+      parameters:
+        - description: The project ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The project ID (UUID).
+            type: string
+        - description: The environment ID (UUID).
+          in: path
+          name: envId
+          required: true
+          schema:
+            description: The environment ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvironmentResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Get an environment
+      tags:
+        - Environments
+    patch:
+      description: Updates the configuration of an environment. All fields are optional; omitted fields are preserved.
+      operationId: update-environment
+      parameters:
+        - description: The project ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The project ID (UUID).
+            type: string
+        - description: The environment ID (UUID).
+          in: path
+          name: envId
+          required: true
+          schema:
+            description: The environment ID (UUID).
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEnvironmentInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvironmentResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Update an environment
+      tags:
+        - Environments
+  /projects/{id}/environments/{envId}/postgres:
+    get:
+      description: Returns the managed Postgres cluster linked to the environment, or 404 when no database has been activated. Requires the database feature flag.
+      operationId: get-environment-postgres
+      parameters:
+        - description: The project ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The project ID (UUID).
+            type: string
+        - description: The environment ID (UUID).
+          in: path
+          name: envId
+          required: true
+          schema:
+            description: The environment ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostgresDatabaseResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Get an environment's managed Postgres database
+      tags:
+        - Postgres
+    post:
+      description: Provisions a new managed Postgres cluster and links it to the environment. Requires the database feature flag and an active subscription.
+      operationId: activate-postgres
+      parameters:
+        - description: The project ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The project ID (UUID).
+            type: string
+        - description: The environment ID (UUID).
+          in: path
+          name: envId
+          required: true
+          schema:
+            description: The environment ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostgresDatabaseResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Activate a managed Postgres database for an environment
+      tags:
+        - Postgres
+  /projects/{id}/github/reconnect:
+    post:
+      description: Re-resolves which installed app installation can access the project's currently linked repository and updates the project.
+      operationId: reconnect-project-github
+      parameters:
+        - description: The project ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The project ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Reconnect a project's GitHub repository
+      tags:
+        - GitHub
+  /projects/{id}/github/status:
+    get:
+      description: Reports whether the project's linked GitHub repository is accessible via an installed app.
+      operationId: get-project-github-status
+      parameters:
+        - description: The project ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The project ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectGitHubStatusResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Get a project's GitHub connection status
+      tags:
+        - GitHub
+security:
+  - apiKey: []
+servers:
+  - url: /v1

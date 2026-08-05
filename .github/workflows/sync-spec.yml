@@ -1,0 +1,75 @@
+name: Sync spec
+
+# Keeps the committed OpenAPI snapshot in sync with the deployed spec.
+# Runs on a schedule, on manual dispatch, and on a `spec-deployed`
+# repository dispatch (sent by the API deploy pipeline). When the deployed
+# spec differs from the snapshot, it regenerates the SDK and opens a pull
+# request with the diff.
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  repository_dispatch:
+    types:
+      - spec-deployed
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-spec
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync OpenAPI spec
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Fetch the deployed spec
+        run: curl -fsSL --retry 3 https://api.atlasflow.com/v1/openapi.yaml -o openapi.yaml
+
+      - name: Check for changes
+        id: spec
+        run: |
+          if git diff --quiet -- openapi.yaml; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install dependencies
+        if: steps.spec.outputs.changed == 'true'
+        run: npm ci --no-audit --no-fund
+
+      - name: Regenerate the SDK
+        if: steps.spec.outputs.changed == 'true'
+        run: npm run generate
+
+      - name: Open pull request
+        if: steps.spec.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
+        with:
+          branch: sync/openapi-spec
+          commit-message: Sync OpenAPI spec snapshot with the deployed API
+          title: Sync OpenAPI spec snapshot with the deployed API
+          body: |
+            Automated update. The deployed spec at
+            https://api.atlasflow.com/v1/openapi.yaml changed, so this PR
+            refreshes `openapi.yaml` and the regenerated code in
+            `src/generated`.
+
+            Review the diff, then merge and tag a release to publish.

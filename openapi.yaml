@@ -104,7 +104,7 @@ components:
           description: A workspace-owned OCI image ID.
           type: string
         machine_tier:
-          description: "Runtime tier: small, medium, or large. Defaults to small."
+          description: "Runtime tier: small, medium, large, or xlarge. Defaults to small."
           examples:
             - small
           type: string
@@ -819,6 +819,62 @@ components:
         - hostname
         - created_at
         - updated_at
+      type: object
+    MachineUsageMetricResponse:
+      additionalProperties: false
+      properties:
+        cost_cents:
+          description: The cost of this metric in USD cents.
+          format: double
+          type: number
+        key:
+          description: "The usage metric: vcpu, memory, network-in, or network-out."
+          type: string
+        quantity:
+          description: The consumed quantity, expressed in the metric's unit.
+          format: double
+          type: number
+        unit:
+          description: "The quantity unit: vcpu-second, gibibyte-second, or byte."
+          type: string
+      required:
+        - key
+        - quantity
+        - unit
+        - cost_cents
+      type: object
+    MachineUsageResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/MachineUsageResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        currency:
+          description: The cost currency. Always USD.
+          type: string
+        machine_id:
+          description: The stable Machine ID.
+          type: string
+        metrics:
+          description: Per-metric usage totals since the Machine was created. Usage data can lag by up to 60 seconds.
+          items:
+            $ref: "#/components/schemas/MachineUsageMetricResponse"
+          type:
+            - array
+            - "null"
+        total_cost_cents:
+          description: The total cost in USD cents across all metrics.
+          format: double
+          type: number
+      required:
+        - machine_id
+        - currency
+        - metrics
+        - total_cost_cents
       type: object
     MeResponse:
       additionalProperties: false
@@ -1591,6 +1647,36 @@ paths:
       security:
         - apiKey: []
       summary: Resume a Machine
+      tags:
+        - Machines
+  /machines/{id}/usage:
+    get:
+      description: Returns the Machine's total resource usage and its cost in USD cents, accumulated since the Machine was created. Usage data can lag by up to 60 seconds.
+      operationId: get-machine-usage
+      parameters:
+        - description: The stable Machine ID (UUID).
+          in: path
+          name: id
+          required: true
+          schema:
+            description: The stable Machine ID (UUID).
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MachineUsageResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Get Machine usage
       tags:
         - Machines
   /me:

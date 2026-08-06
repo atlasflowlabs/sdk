@@ -95,7 +95,7 @@ export type CreateMachineInputBody = {
      */
     image_id: string;
     /**
-     * Runtime tier: small, medium, or large. Defaults to small.
+     * Runtime tier: small, medium, large, or xlarge. Defaults to small.
      */
     machine_tier?: string;
     /**
@@ -597,6 +597,48 @@ export type MachineResponse = {
     updated_at: string;
 };
 
+export type MachineUsageMetricResponse = {
+    /**
+     * The cost of this metric in USD cents.
+     */
+    cost_cents: number;
+    /**
+     * The usage metric: vcpu, memory, network-in, or network-out.
+     */
+    key: string;
+    /**
+     * The consumed quantity, expressed in the metric's unit.
+     */
+    quantity: number;
+    /**
+     * The quantity unit: vcpu-second, gibibyte-second, or byte.
+     */
+    unit: string;
+};
+
+export type MachineUsageResponse = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    /**
+     * The cost currency. Always USD.
+     */
+    currency: string;
+    /**
+     * The stable Machine ID.
+     */
+    machine_id: string;
+    /**
+     * Per-metric usage totals since the Machine was created. Usage data can lag by up to 60 seconds.
+     */
+    metrics: Array<MachineUsageMetricResponse> | null;
+    /**
+     * The total cost in USD cents across all metrics.
+     */
+    total_cost_cents: number;
+};
+
 export type MeResponse = {
     /**
      * A URL to the JSON Schema for this object.
@@ -850,7 +892,7 @@ export type CreateMachineInputBodyWritable = {
      */
     image_id: string;
     /**
-     * Runtime tier: small, medium, or large. Defaults to small.
+     * Runtime tier: small, medium, large, or xlarge. Defaults to small.
      */
     machine_tier?: string;
     /**
@@ -1122,6 +1164,25 @@ export type MachineResponseWritable = {
      * When the Machine was last updated.
      */
     updated_at: string;
+};
+
+export type MachineUsageResponseWritable = {
+    /**
+     * The cost currency. Always USD.
+     */
+    currency: string;
+    /**
+     * The stable Machine ID.
+     */
+    machine_id: string;
+    /**
+     * Per-metric usage totals since the Machine was created. Usage data can lag by up to 60 seconds.
+     */
+    metrics: Array<MachineUsageMetricResponse> | null;
+    /**
+     * The total cost in USD cents across all metrics.
+     */
+    total_cost_cents: number;
 };
 
 export type MeResponseWritable = {
@@ -1753,6 +1814,36 @@ export type ResumeMachineResponses = {
 };
 
 export type ResumeMachineResponse = ResumeMachineResponses[keyof ResumeMachineResponses];
+
+export type GetMachineUsageData = {
+    body?: never;
+    path: {
+        /**
+         * The stable Machine ID (UUID).
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/machines/{id}/usage';
+};
+
+export type GetMachineUsageErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type GetMachineUsageError = GetMachineUsageErrors[keyof GetMachineUsageErrors];
+
+export type GetMachineUsageResponses = {
+    /**
+     * OK
+     */
+    200: MachineUsageResponse;
+};
+
+export type GetMachineUsageResponse = GetMachineUsageResponses[keyof GetMachineUsageResponses];
 
 export type GetMeData = {
     body?: never;

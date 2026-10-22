@@ -53,6 +53,24 @@ const project = await atlasflow.getProject({
 
 ## Development
 
+Install [mise](https://mise.jdx.dev/getting-started.html) and activate it in your
+shell. From the repository root, install the pinned Node.js 24.22.1 toolchain
+and dependencies (npm is included with Node.js):
+
+```sh
+mise trust
+mise install
+npm ci
+```
+
+The Node.js pin matches CI. Use the existing checks and build scripts:
+
+```sh
+npm run typecheck
+npm test
+npm run build
+```
+
 The SDK is generated from `openapi.yaml`, a committed snapshot of the
 public spec at <https://api.atlasflow.com/v1/openapi.yaml>. The generated
 code lives in `src/generated`. Do not edit the snapshot or the generated

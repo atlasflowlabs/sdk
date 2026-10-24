@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivatePostgresData, ActivatePostgresErrors, ActivatePostgresResponses, CreateDeploymentData, CreateDeploymentErrors, CreateDeploymentResponses, CreateEnvironmentData, CreateEnvironmentErrors, CreateEnvironmentResponses, CreateImageData, CreateImageErrors, CreateImageResponses, CreateMachineData, CreateMachineErrors, CreateMachineResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteEnvironmentData, DeleteEnvironmentErrors, DeleteEnvironmentResponses, DeleteMachineData, DeleteMachineErrors, DeleteMachineResponses, GetDeploymentData, GetDeploymentErrors, GetDeploymentResponses, GetEnvironmentData, GetEnvironmentErrors, GetEnvironmentPostgresData, GetEnvironmentPostgresErrors, GetEnvironmentPostgresResponses, GetEnvironmentResponses, GetGithubInstallUrlData, GetGithubInstallUrlErrors, GetGithubInstallUrlResponses, GetImageData, GetImageErrors, GetImageResponses, GetMachineData, GetMachineErrors, GetMachineResponses, GetMachineUsageData, GetMachineUsageErrors, GetMachineUsageResponses, GetMeData, GetMeErrors, GetMeResponses, GetProjectData, GetProjectErrors, GetProjectGithubStatusData, GetProjectGithubStatusErrors, GetProjectGithubStatusResponses, GetProjectResponses, ListDeploymentDomainsData, ListDeploymentDomainsErrors, ListDeploymentDomainsResponses, ListDeploymentLogsData, ListDeploymentLogsErrors, ListDeploymentLogsResponses, ListDeploymentsData, ListDeploymentsErrors, ListDeploymentsResponses, ListEnvironmentsData, ListEnvironmentsErrors, ListEnvironmentsResponses, ListFeatureFlagsData, ListFeatureFlagsErrors, ListFeatureFlagsResponses, ListGithubAccountsData, ListGithubAccountsErrors, ListGithubAccountsResponses, ListGithubRepositoriesData, ListGithubRepositoriesErrors, ListGithubRepositoriesResponses, ListImagesData, ListImagesErrors, ListImagesResponses, ListMachinesData, ListMachinesErrors, ListMachinesResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, PauseMachineData, PauseMachineErrors, PauseMachineResponses, ReconnectProjectGithubData, ReconnectProjectGithubErrors, ReconnectProjectGithubResponses, ResumeMachineData, ResumeMachineErrors, ResumeMachineResponses, UpdateEnvironmentData, UpdateEnvironmentErrors, UpdateEnvironmentResponses } from './types.gen';
+import type { ActivatePostgresData, ActivatePostgresErrors, ActivatePostgresResponses, CreateDeploymentData, CreateDeploymentErrors, CreateDeploymentResponses, CreateEnvironmentData, CreateEnvironmentErrors, CreateEnvironmentResponses, CreateEnvironmentVariableData, CreateEnvironmentVariableErrors, CreateEnvironmentVariableResponses, CreateImageData, CreateImageErrors, CreateImageResponses, CreateMachineData, CreateMachineErrors, CreateMachineResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteEnvironmentData, DeleteEnvironmentErrors, DeleteEnvironmentResponses, DeleteEnvironmentVariableData, DeleteEnvironmentVariableErrors, DeleteEnvironmentVariableResponses, DeleteMachineData, DeleteMachineErrors, DeleteMachineResponses, GetDeploymentData, GetDeploymentErrors, GetDeploymentResponses, GetEnvironmentData, GetEnvironmentErrors, GetEnvironmentPostgresData, GetEnvironmentPostgresErrors, GetEnvironmentPostgresResponses, GetEnvironmentResponses, GetGithubInstallUrlData, GetGithubInstallUrlErrors, GetGithubInstallUrlResponses, GetImageData, GetImageErrors, GetImageResponses, GetMachineData, GetMachineErrors, GetMachineResponses, GetMachineUsageData, GetMachineUsageErrors, GetMachineUsageResponses, GetMeData, GetMeErrors, GetMeResponses, GetProjectData, GetProjectErrors, GetProjectGithubStatusData, GetProjectGithubStatusErrors, GetProjectGithubStatusResponses, GetProjectResponses, ListDeploymentDomainsData, ListDeploymentDomainsErrors, ListDeploymentDomainsResponses, ListDeploymentLogsData, ListDeploymentLogsErrors, ListDeploymentLogsResponses, ListDeploymentsData, ListDeploymentsErrors, ListDeploymentsResponses, ListEnvironmentsData, ListEnvironmentsErrors, ListEnvironmentsResponses, ListEnvironmentVariablesData, ListEnvironmentVariablesErrors, ListEnvironmentVariablesResponses, ListFeatureFlagsData, ListFeatureFlagsErrors, ListFeatureFlagsResponses, ListGithubAccountsData, ListGithubAccountsErrors, ListGithubAccountsResponses, ListGithubRepositoriesData, ListGithubRepositoriesErrors, ListGithubRepositoriesResponses, ListImagesData, ListImagesErrors, ListImagesResponses, ListMachinesData, ListMachinesErrors, ListMachinesResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, PauseMachineData, PauseMachineErrors, PauseMachineResponses, ReconnectProjectGithubData, ReconnectProjectGithubErrors, ReconnectProjectGithubResponses, ResumeMachineData, ResumeMachineErrors, ResumeMachineResponses, UpdateEnvironmentData, UpdateEnvironmentErrors, UpdateEnvironmentResponses, UpdateEnvironmentVariableData, UpdateEnvironmentVariableErrors, UpdateEnvironmentVariableResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -468,6 +468,62 @@ export class Atlasflow extends HeyApiClient {
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/projects/{id}/environments/{envId}/postgres',
             ...options
+        });
+    }
+    
+    /**
+     * List environment variable metadata
+     */
+    public listEnvironmentVariables<ThrowOnError extends boolean = false>(options: Options<ListEnvironmentVariablesData, ThrowOnError>): RequestResult<ListEnvironmentVariablesResponses, ListEnvironmentVariablesErrors, ThrowOnError> {
+        return (options.client ?? this.client).get<ListEnvironmentVariablesResponses, ListEnvironmentVariablesErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/projects/{id}/environments/{envId}/variables',
+            ...options
+        });
+    }
+    
+    /**
+     * Request or confirm deletion of an environment variable
+     */
+    public deleteEnvironmentVariable<ThrowOnError extends boolean = false>(options: Options<DeleteEnvironmentVariableData, ThrowOnError>): RequestResult<DeleteEnvironmentVariableResponses, DeleteEnvironmentVariableErrors, ThrowOnError> {
+        return (options.client ?? this.client).delete<DeleteEnvironmentVariableResponses, DeleteEnvironmentVariableErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/projects/{id}/environments/{envId}/variables/{name}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Update an existing environment variable
+     */
+    public updateEnvironmentVariable<ThrowOnError extends boolean = false>(options: Options<UpdateEnvironmentVariableData, ThrowOnError>): RequestResult<UpdateEnvironmentVariableResponses, UpdateEnvironmentVariableErrors, ThrowOnError> {
+        return (options.client ?? this.client).patch<UpdateEnvironmentVariableResponses, UpdateEnvironmentVariableErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/projects/{id}/environments/{envId}/variables/{name}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Create an environment variable
+     */
+    public createEnvironmentVariable<ThrowOnError extends boolean = false>(options: Options<CreateEnvironmentVariableData, ThrowOnError>): RequestResult<CreateEnvironmentVariableResponses, CreateEnvironmentVariableErrors, ThrowOnError> {
+        return (options.client ?? this.client).post<CreateEnvironmentVariableResponses, CreateEnvironmentVariableErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/projects/{id}/environments/{envId}/variables/{name}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
         });
     }
     

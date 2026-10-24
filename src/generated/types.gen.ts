@@ -172,6 +172,25 @@ export type DeleteEnvironmentOutputBody = {
     deleted: boolean;
 };
 
+export type DeleteEnvironmentVariableInputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    confirm?: string;
+};
+
+export type DeleteEnvironmentVariableOutputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    confirmation_token?: string;
+    deleted: boolean;
+    expires_at?: string;
+    variable: EnvironmentVariableResponse;
+};
+
 export type DeploymentDomainResponse = {
     /**
      * The domain ID.
@@ -324,6 +343,18 @@ export type EnvironmentResponse = {
     /**
      * The environment type: production or preview.
      */
+    type: string;
+    updated_at: string;
+};
+
+export type EnvironmentVariableResponse = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    created_at: string;
+    id: string;
+    name: string;
     type: string;
     updated_at: string;
 };
@@ -483,6 +514,14 @@ export type ListResponseEnvironmentResponse = {
      */
     readonly $schema?: string;
     data: Array<EnvironmentResponse> | null;
+};
+
+export type ListResponseEnvironmentVariableResponse = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    data: Array<EnvironmentVariableResponse> | null;
 };
 
 export type ListResponseGithubAccountResponse = {
@@ -817,6 +856,14 @@ export type WorkspaceResponse = {
     slug: string;
 };
 
+export type WriteEnvironmentVariableInputBody = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    value: string;
+};
+
 export type CreateDeploymentInputBodyWritable = {
     /**
      * The environment slug to deploy. Defaults to production.
@@ -938,6 +985,17 @@ export type DeleteEnvironmentOutputBodyWritable = {
     deleted: boolean;
 };
 
+export type DeleteEnvironmentVariableInputBodyWritable = {
+    confirm?: string;
+};
+
+export type DeleteEnvironmentVariableOutputBodyWritable = {
+    confirmation_token?: string;
+    deleted: boolean;
+    expires_at?: string;
+    variable: EnvironmentVariableResponseWritable;
+};
+
 export type DeploymentResponseWritable = {
     /**
      * When the deployment was created.
@@ -1022,6 +1080,14 @@ export type EnvironmentResponseWritable = {
     /**
      * The environment type: production or preview.
      */
+    type: string;
+    updated_at: string;
+};
+
+export type EnvironmentVariableResponseWritable = {
+    created_at: string;
+    id: string;
+    name: string;
     type: string;
     updated_at: string;
 };
@@ -1112,6 +1178,10 @@ export type ListResponseDeploymentResponseWritable = {
 
 export type ListResponseEnvironmentResponseWritable = {
     data: Array<EnvironmentResponseWritable> | null;
+};
+
+export type ListResponseEnvironmentVariableResponseWritable = {
+    data: Array<EnvironmentVariableResponseWritable> | null;
 };
 
 export type ListResponseGithubAccountResponseWritable = {
@@ -1280,6 +1350,10 @@ export type UpdateEnvironmentInputBodyWritable = {
      * The runtime machine tier.
      */
     runtime_machine_tier?: string;
+};
+
+export type WriteEnvironmentVariableInputBodyWritable = {
+    value: string;
 };
 
 export type ListDeploymentsData = {
@@ -2179,6 +2253,129 @@ export type ActivatePostgresResponses = {
 };
 
 export type ActivatePostgresResponse = ActivatePostgresResponses[keyof ActivatePostgresResponses];
+
+export type ListEnvironmentVariablesData = {
+    body?: never;
+    path: {
+        id: string;
+        envId: string;
+    };
+    query?: {
+        type?: 'runtime' | 'build';
+    };
+    url: '/projects/{id}/environments/{envId}/variables';
+};
+
+export type ListEnvironmentVariablesErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type ListEnvironmentVariablesError = ListEnvironmentVariablesErrors[keyof ListEnvironmentVariablesErrors];
+
+export type ListEnvironmentVariablesResponses = {
+    /**
+     * OK
+     */
+    200: ListResponseEnvironmentVariableResponse;
+};
+
+export type ListEnvironmentVariablesResponse = ListEnvironmentVariablesResponses[keyof ListEnvironmentVariablesResponses];
+
+export type DeleteEnvironmentVariableData = {
+    body: DeleteEnvironmentVariableInputBodyWritable;
+    path: {
+        id: string;
+        envId: string;
+        name: string;
+    };
+    query?: {
+        type?: 'runtime' | 'build';
+    };
+    url: '/projects/{id}/environments/{envId}/variables/{name}';
+};
+
+export type DeleteEnvironmentVariableErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type DeleteEnvironmentVariableError = DeleteEnvironmentVariableErrors[keyof DeleteEnvironmentVariableErrors];
+
+export type DeleteEnvironmentVariableResponses = {
+    /**
+     * OK
+     */
+    200: DeleteEnvironmentVariableOutputBody;
+};
+
+export type DeleteEnvironmentVariableResponse = DeleteEnvironmentVariableResponses[keyof DeleteEnvironmentVariableResponses];
+
+export type UpdateEnvironmentVariableData = {
+    body: WriteEnvironmentVariableInputBodyWritable;
+    path: {
+        id: string;
+        envId: string;
+        name: string;
+    };
+    query?: {
+        type?: 'runtime' | 'build';
+    };
+    url: '/projects/{id}/environments/{envId}/variables/{name}';
+};
+
+export type UpdateEnvironmentVariableErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type UpdateEnvironmentVariableError = UpdateEnvironmentVariableErrors[keyof UpdateEnvironmentVariableErrors];
+
+export type UpdateEnvironmentVariableResponses = {
+    /**
+     * OK
+     */
+    200: EnvironmentVariableResponse;
+};
+
+export type UpdateEnvironmentVariableResponse = UpdateEnvironmentVariableResponses[keyof UpdateEnvironmentVariableResponses];
+
+export type CreateEnvironmentVariableData = {
+    body: WriteEnvironmentVariableInputBodyWritable;
+    path: {
+        id: string;
+        envId: string;
+        name: string;
+    };
+    query?: {
+        type?: 'runtime' | 'build';
+    };
+    url: '/projects/{id}/environments/{envId}/variables/{name}';
+};
+
+export type CreateEnvironmentVariableErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type CreateEnvironmentVariableError = CreateEnvironmentVariableErrors[keyof CreateEnvironmentVariableErrors];
+
+export type CreateEnvironmentVariableResponses = {
+    /**
+     * OK
+     */
+    200: EnvironmentVariableResponse;
+};
+
+export type CreateEnvironmentVariableResponse = CreateEnvironmentVariableResponses[keyof CreateEnvironmentVariableResponses];
 
 export type ReconnectProjectGithubData = {
     body?: never;

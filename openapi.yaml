@@ -221,6 +221,43 @@ components:
       required:
         - deleted
       type: object
+    DeleteEnvironmentVariableInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/DeleteEnvironmentVariableInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        confirm:
+          maxLength: 4096
+          type: string
+      type: object
+    DeleteEnvironmentVariableOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/DeleteEnvironmentVariableOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        confirmation_token:
+          type: string
+        deleted:
+          type: boolean
+        expires_at:
+          format: date-time
+          type: string
+        variable:
+          $ref: "#/components/schemas/EnvironmentVariableResponse"
+      required:
+        - deleted
+        - variable
+      type: object
     DeploymentDomainResponse:
       additionalProperties: false
       properties:
@@ -401,6 +438,35 @@ components:
         - build_machine_tier
         - runtime_machine_tier
         - min_replicas
+        - created_at
+        - updated_at
+      type: object
+    EnvironmentVariableResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/EnvironmentVariableResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - type
         - created_at
         - updated_at
       type: object
@@ -637,6 +703,25 @@ components:
         data:
           items:
             $ref: "#/components/schemas/EnvironmentResponse"
+          type:
+            - array
+            - "null"
+      required:
+        - data
+      type: object
+    ListResponseEnvironmentVariableResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/ListResponseEnvironmentVariableResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          items:
+            $ref: "#/components/schemas/EnvironmentVariableResponse"
           type:
             - array
             - "null"
@@ -1089,6 +1174,21 @@ components:
         - name
         - slug
         - created_at
+      type: object
+    WriteEnvironmentVariableInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - /v1/schemas/WriteEnvironmentVariableInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        value:
+          type: string
+      required:
+        - value
       type: object
   securitySchemes:
     apiKey:
@@ -2033,6 +2133,204 @@ paths:
       summary: Activate a managed Postgres database for an environment
       tags:
         - Postgres
+  /projects/{id}/environments/{envId}/variables:
+    get:
+      operationId: list-environment-variables
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: envId
+          required: true
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: type
+          schema:
+            default: runtime
+            enum:
+              - runtime
+              - build
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponseEnvironmentVariableResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: List environment variable metadata
+      tags:
+        - Environment variables
+  /projects/{id}/environments/{envId}/variables/{name}:
+    delete:
+      operationId: delete-environment-variable
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: envId
+          required: true
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: type
+          schema:
+            default: runtime
+            enum:
+              - runtime
+              - build
+            type: string
+        - in: path
+          name: name
+          required: true
+          schema:
+            maxLength: 255
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteEnvironmentVariableInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteEnvironmentVariableOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Request or confirm deletion of an environment variable
+      tags:
+        - Environment variables
+    patch:
+      operationId: update-environment-variable
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: envId
+          required: true
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: type
+          schema:
+            default: runtime
+            enum:
+              - runtime
+              - build
+            type: string
+        - in: path
+          name: name
+          required: true
+          schema:
+            maxLength: 255
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WriteEnvironmentVariableInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvironmentVariableResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Update an existing environment variable
+      tags:
+        - Environment variables
+    post:
+      operationId: create-environment-variable
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: envId
+          required: true
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: type
+          schema:
+            default: runtime
+            enum:
+              - runtime
+              - build
+            type: string
+        - in: path
+          name: name
+          required: true
+          schema:
+            maxLength: 255
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WriteEnvironmentVariableInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvironmentVariableResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - apiKey: []
+      summary: Create an environment variable
+      tags:
+        - Environment variables
   /projects/{id}/github/reconnect:
     post:
       description: Re-resolves which installed app installation can access the project's currently linked repository and updates the project.
